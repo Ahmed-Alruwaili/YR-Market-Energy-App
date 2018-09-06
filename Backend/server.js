@@ -13,8 +13,11 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 var Users = require('./Routes/Users');
+var Weather = require('./Routes/Weather');
 
 app.use('/users',Users);
+
+app.use('/weather',Weather);
 
 app.listen(port,function(){
     console.log("Server is running on port: "+port);

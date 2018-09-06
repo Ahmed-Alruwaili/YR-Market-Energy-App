@@ -4,6 +4,7 @@ var database = require('../db/database');
 var cors = require('cors')
 var jwt = require('jsonwebtoken');
 var token;
+var request = require('request');
 
 users.use(cors());
 
