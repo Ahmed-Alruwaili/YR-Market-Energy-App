@@ -2,12 +2,15 @@
   $(document).ready(function(){
     window.locationData = [];
 
-    $.get("http://localhost:3000/weather/getLocation", function(response){
-      response = response.data;
+    $.get("https://yrenergymarket.firebaseapp.com/stateslist", function(response){
+      //response = response.data;
+      //console.log(response);
+      
       $.each(response, function(i, v){
         var valFormat = {};
-        valFormat["key"] = v.Id;
+        valFormat["key"] = i + "-" + v.ActualValue;
         valFormat["value"] = v.Name;
+        valFormat["coordinates"] = v.Coordinates;
         locationData.push(valFormat);
       });
       locationData.sort(function (a, b) {
@@ -21,7 +24,7 @@
         $('#search-location').append($('<option>', { 
             value: v.key,
             text : v.value 
-        }));
+        }).attr("location-data", "" + v.coordinates + ""));
       });
     });
 
@@ -67,42 +70,46 @@
       var dateFormat = year + "-" + month + "-" + day;
       var selectedVal = [];
 
-      $.ajax({
-        url: 'http://localhost:3000/weather/getData',
-        headers: {
-            'first_name':$("#search-location option:selected").val(),
-            'last_name':$("#search-location option:selected").text(),
-            'Content-Type':'application/json'
-        },
-        method: 'POST',
-        dataType: 'json',
-        success: function(response){
-          response = JSON.parse(response[0].Data);
-          //console.log(response);
-          var latlong = response.city.coord.lat + ", " + response.city.coord.lon;
+      var weatherDataVal = [];
+      var locationName = $("#search-location option:selected").val().split("-")[1] + ",AU";
+      var url = 'http://api.openweathermap.org/data/2.5/forecast?q=' + locationName + '&cnt=100&units=metric&APPID=908f958d6609dd37ee33114a87b81e1a';
 
-          $.each(response.list, function(i, v){
-            var resDate = v.dt_txt.split(" ");
-            if(resDate[0] == dateFormat){
-              var valFormat = {};
-              // valFormat["MaximumTemperature"] = v.main.temp_max + "°C";
-              // valFormat["MinimumTemperature"] = v.main.temp_min + "°C";
-              valFormat["Temperature"] = v.main.temp + "°C";
-              valFormat["Time"] = resDate[1];
-              valFormat["Suburb"] = response.city.name;
-              valFormat["Population"] = response.city.population;
-              selectedVal.push(valFormat);
+      $.get(url, function(res){
+        weatherDataVal.push(res);
+        console.log(res);
+      }).then(function (x){
+          $.ajax({
+            url: 'https://yrenergymarket.firebaseapp.com/weather',
+            method: 'POST',
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8", // send as JSON
+            data: {id: $("#search-location option:selected").val(), value: $("#search-location option:selected").text(), weatherData: JSON.stringify(weatherDataVal)},
+            success: function(response){
+              console.log(response);
+              response = JSON.parse(response[0].Data);
+              console.log(response);
+              var latlong = response.city.coord.lat + ", " + response.city.coord.lon;
+              $.each(response.list, function(i, v){
+                var resDate = v.dt_txt.split(" ");
+                if(resDate[0] == dateFormat){
+                  var valFormat = {};
+                  // valFormat["MaximumTemperature"] = v.main.temp_max + "°C";
+                  // valFormat["MinimumTemperature"] = v.main.temp_min + "°C";
+                  valFormat["Temperature"] = v.main.temp + "°C";
+                  valFormat["Time"] = resDate[1];
+                  valFormat["Suburb"] = response.city.name;
+                  valFormat["Population"] = response.city.population;
+                  selectedVal.push(valFormat);
+                }
+              });
+              //console.log(latlong)
+              myMap(latlong);
+
+              google.maps.event.trigger(map, 'resize');
+              $(".json-data").html(JSON.stringify(selectedVal));
             }
           });
-          //console.log(selectedVal)
-          myMap(latlong);
-
-          google.maps.event.trigger(map, 'resize');
-          $(".json-data").html(JSON.stringify(selectedVal));
-
-        }
+        });
       });
-    });
 
     $('.search-date').datepicker({ dateFormat: 'yy-mm-dd' }).on('changeDate', function (ev) {
       if($("#search-location option:selected").val() == ""){
@@ -116,40 +123,48 @@
       var year = date[2];
       var dateFormat = year + "-" + month + "-" + day;
       var selectedVal = [];
-      $.ajax({
-        url: 'http://localhost:3000/weather/getData',
-        headers: {
-            'first_name':$("#search-location option:selected").val(),
-            'last_name':$("#search-location option:selected").text(),
-            'Content-Type':'application/json'
-        },
-        method: 'POST',
-        dataType: 'json',
-        success: function(response){
-          response = JSON.parse(response[0].Data);
-          console.log(response);
-          var latlong = response.city.coord.lat + ", " + response.city.coord.lon;
-          $.each(response.list, function(i, v){
-            var resDate = v.dt_txt.split(" ");
-            if(resDate[0] == dateFormat){
-              var valFormat = {};
-              // valFormat["MaximumTemperature"] = v.main.temp_max + "°C";
-              // valFormat["MinimumTemperature"] = v.main.temp_min + "°C";
-              valFormat["Temperature"] = v.main.temp + "°C";
-              valFormat["Time"] = resDate[1];
-              valFormat["Suburb"] = response.city.name;
-              valFormat["Population"] = response.city.population;
-              selectedVal.push(valFormat);
+
+      var weatherDataVal = [];
+      var locationName = $("#search-location option:selected").val().split("-")[1] + ",AU";
+      var url = 'http://api.openweathermap.org/data/2.5/forecast?q=' + locationName + '&cnt=100&units=metric&APPID=908f958d6609dd37ee33114a87b81e1a';
+
+      console.log(url);
+      $.get(url, function(res){
+        weatherDataVal.push(res);
+        console.log(res);
+      }).then(function (x){
+          $.ajax({
+            url: 'https://yrenergymarket.firebaseapp.com/weather',
+            method: 'POST',
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8", // send as JSON
+            data: {id: $("#search-location option:selected").val(), value: $("#search-location option:selected").text(), weatherData: JSON.stringify(weatherDataVal)},
+            success: function(response){
+              console.log(response);
+              response = JSON.parse(response[0].Data);
+              console.log(response);
+              var latlong = response.city.coord.lat + ", " + response.city.coord.lon;
+              $.each(response.list, function(i, v){
+                var resDate = v.dt_txt.split(" ");
+                if(resDate[0] == dateFormat){
+                  var valFormat = {};
+                  // valFormat["MaximumTemperature"] = v.main.temp_max + "°C";
+                  // valFormat["MinimumTemperature"] = v.main.temp_min + "°C";
+                  valFormat["Temperature"] = v.main.temp + "°C";
+                  valFormat["Time"] = resDate[1];
+                  valFormat["Suburb"] = response.city.name;
+                  valFormat["Population"] = response.city.population;
+                  selectedVal.push(valFormat);
+                }
+              });
+              //console.log(latlong)
+              myMap(latlong);
+
+              google.maps.event.trigger(map, 'resize');
+              $(".json-data").html(JSON.stringify(selectedVal));
             }
           });
-          //console.log(latlong)
-          myMap(latlong);
-
-          google.maps.event.trigger(map, 'resize');
-          $(".json-data").html(JSON.stringify(selectedVal));
-        }
+        });
       });
-    });
       
   });
 
@@ -157,8 +172,8 @@
     $(".search-date").datepicker({ 
       autoclose: true, 
       todayHighlight: true,
-      startDate: '+1d',
-      endDate: '+4d'
+      startDate: '0d',
+      endDate: '+3d'
     }).datepicker({ dateFormat: 'yy-mm-dd' });
   }
 
