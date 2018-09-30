@@ -1,0 +1,62 @@
+header {
+    padding: 154px 0 100px;
+}
+
+@media (min-width: 992px) {
+    header {
+        padding: 156px 0 100px;
+    }
+}
+
+section {
+    padding: 150px 0;
+}
+
+.team-images{
+  height: 200px;
+  width: 158px;
+}
+
+.fat{
+  width:205px !important;
+}
+
+.json-data{
+    height: 500px;
+    width: 100%;
+    overflow: scroll;
+    margin-top: 60px;
+    background-color: #ff9900;
+    color: white;
+}
+
+.search-bar input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+}
+
+.search-bar button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background: #0b7dda;
+}
+
+.search-bar::after {
+    content: "";
+    clear: both;
+    display: table;
+}

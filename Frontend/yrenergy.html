@@ -10,8 +10,9 @@
 
     <title>YR Energy</title>
 
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" /> -->
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <link href="plugins/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
@@ -56,362 +57,39 @@
     <section id="search" class="bg-light">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <h2>Weather</h2>
-                    <div class="col-lg-4 search-bar col-sm-6 mb-4">
-                        <input type="text" class="search-date" placeholder="Search Date.." name="search">
-                        <button id="calendar-btn" type="submit"><i class="fa fa-calendar"></i></button>
+              <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                <h2>Weather</h2>
+                <form>
+                  <div class="form-row">
+                    <div class="col-12 col-md-5 mb-2 mb-md-0">
+                      <input type="text" class="form-control form-control-lg search-date" placeholder="Search Date">
                     </div>
-                    <div class="col-lg-7 search-bar col-sm-6 mb-4">
-                        <select id="search-location">
-                            
-                        </select>
+                    <div class="col-12 col-md-4">
+                      <select id="search-location" class="form-control form-control-lg" id="exampleFormControlSelect1">
+                      </select>
                     </div>
-                    <div class="json-data">
-
+                    <div class="col-12 col-md-3">
+                      <input type="button" id="search-btn" class="btn btn-block btn-lg btn-primary" value="Search">
                     </div>
-
-                    <div class="">
-                        <iframe width="1000" height="500" frameborder="0" src="http://melbournesuburbsmap.com/" style="border:0; max-width: 100%;" allowfullscreen allow="geolocation"></iframe>
-                    </div>
-                    <div id="map" style="width: 1000px; height: 500px;"></div>
-                    <script type="text/javascript">
-                        var myLocations = [
-                            [CBD, -37.813243, 144.954596, 3000],
-                            [Richmond, -37.823277, 144.995451, 3121],
-                            [Camberwell, -37.835607, 145.081747, 3124],
-                            [Blackburn, -37.820461, 145.151859, 3130],
-                            [Burwood, -37.848680, 145.107996, 3125],
-                            [Sunshine, -37.780758, 144.834124, 3020],
-                            [Doncaster, -37.787338, 145.121400, 3108],
-                            [Hawthorn, -37.825768, 145.031571, 3122],
-                            [Doncaster, -37.787233, 145.120430, 3108],
-                            [Toorak, -37.840923, 145.016047, 3142],
-                            [Preston, -37.743133, 145.001871, 3072],
-                            [Brunswick, -37.766826, 144.961052, 3056],
-                            [Coburg, -37.743365, 144.961647, 3058],
-                            [Essendon, -37.749021, 144.913034, 3040],
-                            [Footscray, -37.798081, 144.884202, 3011],
-                            [Yarraville, -37.817266, 144.886321, 3013],
-                            [Newport, -37.842239, 144.881566, 3015],
-                            [Altona, -37.868115, 144.823748, 3018],
-                            [Southbank, -37.829023, 144.954101, 3006],
-                            [Ivanhoe, -37.772462, 145.040018, 3079],
-                            [Balwyn, -37.808276, 145.072634, 3103]
-                        ];
-
-                        function initialize() {
-
-                            var mapProp = {
-                                center: new google.maps.LatLng(-37.813629, 144.963058),
-                                zoom: 11,
-                                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                                styles: [
-
-                                    {
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#f5f5f5"
-                                        }]
-                                    }, {
-                                        "elementType": "labels.icon",
-                                        "stylers": [{
-                                            "visibility": "off"
-                                        }]
-                                    }, {
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#616161"
-                                        }]
-                                    }, {
-                                        "elementType": "labels.text.stroke",
-                                        "stylers": [{
-                                            "color": "#f5f5f5"
-                                        }]
-                                    }, {
-                                        "featureType": "administrative.country",
-                                        "elementType": "geometry.fill",
-                                        "stylers": [{
-                                            "visibility": "on"
-                                        }]
-                                    }, {
-                                        "featureType": "administrative.land_parcel",
-                                        "stylers": [{
-                                            "visibility": "off"
-                                        }]
-                                    }, {
-                                        "featureType": "administrative.land_parcel",
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#bdbdbd"
-                                        }]
-                                    }, {
-                                        "featureType": "administrative.neighborhood",
-                                        "stylers": [{
-                                            "visibility": "off"
-                                        }]
-                                    }, {
-                                        "featureType": "poi",
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#eeeeee"
-                                        }]
-                                    }, {
-                                        "featureType": "poi",
-                                        "elementType": "labels.text",
-                                        "stylers": [{
-                                            "visibility": "off"
-                                        }]
-                                    }, {
-                                        "featureType": "poi",
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#757575"
-                                        }]
-                                    }, {
-                                        "featureType": "poi.attraction",
-                                        "elementType": "labels.icon",
-                                        "stylers": [{
-                                            "color": "#9437ff"
-                                        }]
-                                    }, {
-                                        "featureType": "poi.park",
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#e5e5e5"
-                                        }]
-                                    }, {
-                                        "featureType": "poi.park",
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#9e9e9e"
-                                        }]
-                                    }, {
-                                        "featureType": "road",
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#ffffff"
-                                        }]
-                                    }, {
-                                        "featureType": "road",
-                                        "elementType": "labels",
-                                        "stylers": [{
-                                            "visibility": "off"
-                                        }]
-                                    }, {
-                                        "featureType": "road.arterial",
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#757575"
-                                        }]
-                                    }, {
-                                        "featureType": "road.highway",
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#dadada"
-                                        }]
-                                    }, {
-                                        "featureType": "road.highway",
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#616161"
-                                        }]
-                                    }, {
-                                        "featureType": "road.local",
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#9e9e9e"
-                                        }]
-                                    }, {
-                                        "featureType": "transit.line",
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#e5e5e5"
-                                        }]
-                                    }, {
-                                        "featureType": "transit.station",
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#eeeeee"
-                                        }]
-                                    }, {
-                                        "featureType": "water",
-                                        "elementType": "geometry",
-                                        "stylers": [{
-                                            "color": "#c9c9c9"
-                                        }]
-                                    }, {
-                                        "featureType": "water",
-                                        "elementType": "labels.text",
-                                        "stylers": [{
-                                            "visibility": "off"
-                                        }]
-                                    }, {
-                                        "featureType": "water",
-                                        "elementType": "labels.text.fill",
-                                        "stylers": [{
-                                            "color": "#9e9e9e"
-                                        }]
-                                    }
-                                ]
-                            };
-
-
-                            var map = new google.maps.Map(document.getElementById("map"), mapProp);
-                        }
-
-
-
-                        google.maps.event.addDomListener(window, 'load', initialize);
-                        for (var city in myLocations) {
-                            // Add the circle for this city to the map.
-                            var cityCircle = new google.maps.Circle({
-                                strokeColor: '#FF0000',
-                                strokeOpacity: 0.8,
-                                strokeWeight: 2,
-                                fillColor: '#FF0000',
-                                fillOpacity: 0.35,
-                                map: map,
-                                center: myLocations[city].center,
-
-                            });
-                        }
-                    </script>
-                    <script>
-                        var map;
-                        var searchBox;
-                        var markers = [];
-                        var selectedSuburb;
-
-                        (function parse() {
-                            selectedSuburb = document.getElementById("suburb-id").innerText;
-                        })();
-
-                        function initialize() {
-                            var mapOptions = {
-                                center: new google.maps.LatLng(-37.813, 144.963),
-                                zoom: 13,
-                                zoomControl: false,
-                                streetViewControl: false,
-                                mapTypeControl: false,
-                                panControl: false
-                            };
-
-                            if (window.innerWidth > 728) {
-                                mapOptions.zoomControl = true;
-                                mapOptions.zoomControlOptions = {
-                                    position: google.maps.ControlPosition.RIGHT_BOTTOM
-                                };
-
-                                mapOptions.mapTypeControl = true;
-                                mapOptions.mapTypeControlOptions = {
-                                    position: google.maps.ControlPosition.LEFT_BOTTOM
-                                };
-                            }
-
-                            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-                            google.maps.event.addDomListener($('#selection')[0], 'click', onSelectionClick);
-                            google.maps.event.addDomListener($('#close-icon')[0], 'click', function() {
-                                $('#selection').collapse('hide');
-                            });
-                            map.data.loadGeoJson('/data0.json', {}, function() {
-                                if (selectedSuburb) {
-                                    var feature = map.data.getFeatureById(selectedSuburb);
-                                    selectSuburb(feature);
-                                    map.setCenter(feature.getProperty('center'));
-                                }
-                            });
-
-                            map.data.setStyle({
-                                fillOpacity: 0.0,
-                                strokeWeight: 2.0
-                            });
-                            map.data.addListener('click', function(event) {
-                                selectSuburb(event.feature);
-                            });
-
-                            var searchDiv = document.getElementById('search');
-                            map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchDiv);
-                            searchBox = new google.maps.places.SearchBox(document.getElementById('autocomplete'), {
-                                bounds: map.getBounds()
-                            });
-
-                            var adNode = document.createElement('div');
-                            adNode.innerHTML = ad;
-                            map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(adNode);
-                            google.maps.event.addListenerOnce(map, 'tilesloaded', function() {
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            });
-                        }
-
-                        function onPlaceChange() {
-                            var places = searchBox.getPlaces();
-                            var i;
-                            var marker = null;
-                            for (i = 0, marker; marker = markers[i]; i++) {
-                                marker.setMap(null);
-                            }
-
-                            // For each place, get the icon, place name, and location.
-                            markers = [];
-                            var bounds = new google.maps.LatLngBounds();
-                            var place = null;
-                            for (i = 0, place; place = places[i]; i++) {
-                                var image = {
-                                    url: place.icon,
-                                    size: new google.maps.Size(71, 71),
-                                    origin: new google.maps.Point(0, 0),
-                                    anchor: new google.maps.Point(17, 34),
-                                    scaledSize: new google.maps.Size(25, 25)
-                                };
-
-                                // Create a marker for each place.
-                                marker = new google.maps.Marker({
-                                    map: map,
-                                    icon: image,
-                                    title: place.name,
-                                    position: place.geometry.location
-                                });
-
-                                markers.push(marker);
-
-                                bounds.extend(place.geometry.location);
-                            }
-
-                            map.panTo(bounds.getCenter());
-                        }
-
-                        function onSelectionClick() {
-                            var selectionName = $('#selection-name');
-                            if (selectionName.css('white-space') == 'nowrap') {
-                                selectionName.css('white-space', 'normal');
-                                $('#selection-notes').css('white-space', 'normal');
-                            } else {
-                                selectionName.css('white-space', 'nowrap');
-                                $('#selection-notes').css('white-space', 'nowrap');
-                            }
-                        }
-
-                        function selectSuburb(feature) {
-                            map.data.revertStyle();
-                            map.data.overrideStyle(feature, {
-                                fillOpacity: 0.1,
-                                fillColor: 'red'
-                            });
-                            var suburbId = feature.getId();
-                            var suburbIdSplit = suburbId.split('~');
-                            $('#selection-name').css('white-space', 'nowrap').text(suburbIdSplit[0]);
-                            $('#selection-notes').css('white-space', 'nowrap');
-                            var suburbIdUrl = suburbId.replace(/ /g, '+');
-                            $('#selection').collapse('show');
-                            document.title = suburbIdSplit[0] + ' Suburb Map';
-                            history.replaceState(null, document.title, '/suburbs/' + suburbIdUrl + '/');
-                        }
-
-                        google.maps.event.addDomListener(window, 'load', initialize);
-                    </script>
-                </div>
+                  </div>
+                </form>
+              </div>      
+          
             </div>
+        </div>
+    </section>
+    <!-- Icons Grid -->
+    <section class="features-icons bg-light text-center">
+        <div class="container">
+          <div class="row">
+              <div class="col-xl-9 mx-auto">
+                <div id="googleMap"></div>
+            </div>
+            <div class="col-xl-9 mx-auto">
+            <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+          </div>
+
+          </div>
         </div>
     </section>
 
@@ -457,38 +135,38 @@
                                 <h3>Himanshu Metai
                                 </h3>
 
-                                <small>Team Leader</small>
+                                    <small>Team Leader</small>
                             </div>
                             <div class="col-lg-4 col-sm-6 text-center mb-4">
                                 <img class="rounded-circle img-fluid d-block mx-auto team-images" src="img/team/vishal.jpg" alt="">
                                 <h3>Vishal Chandrashekhar Tatar
                                 </h3>
 
-                                <small>Product Owner</small>
+                                    <small>Product Owner</small>
                             </div>
                             <div class="col-lg-4 col-sm-6 text-center mb-4">
                                 <img class="rounded-circle img-fluid d-block mx-auto team-images" src="img/team/krithika.jpeg" alt="">
                                 <h3>Krithika Arulselvam
                                 </h3>
-                                <small>UI/UX Designer</small>
+                                    <small>UI/UX Designer</small>
                             </div>
                             <div class="col-lg-4 col-sm-6 text-center mb-4">
                                 <img class="rounded-circle img-fluid d-block mx-auto team-images fat" src="img/team/ahmed.jpg" alt="">
                                 <h3>Ahmed Alruwaili
                                 </h3>
-                                <small>Front End Developer</small>
+                                    <small>Front End Developer</small>
                             </div>
                             <div class="col-lg-4 col-sm-6 text-center mb-4">
                                 <img class="rounded-circle img-fluid d-block mx-auto team-images fat" src="img/team/prayen_.png" alt="">
                                 <h3>Prayen Shrestha
                                 </h3>
-                                <small>Front End Developer</small>
+                                    <small>Front End Developer</small>
                             </div>
                             <div class="col-lg-4 col-sm-6 text-center mb-4">
                                 <img class="rounded-circle img-fluid d-block mx-auto team-images" src="img/team/sai.jpg" alt="">
                                 <h3>Venkata Sai Teja Nalluri
                                 </h3>
-                                <small>Back End Developer</small>
+                                    <small>Back End Developer</small>
                             </div>
                         </div>
 
@@ -509,7 +187,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCH_5swxHw5cbN9kN1_3Xz9wFVQlRZY-fo&callback=initMap" type="text/javascript"></script>
+    <script type="text/javascript" src="plugins/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script src="plugins/js/canvasjs.min.js"></script>
+    <script src="js/mapdata.js"></script>
+    <script src="js/australiamap.js"></script>
     <script src="js/index.js"></script>
 
 </body>

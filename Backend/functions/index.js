@@ -2,11 +2,16 @@ const functions = require('firebase-functions');
 const firebase = require('firebase-admin');
 const express = require('express');
 var cors = require('cors');
+const engines = require('consolidate');
 var uuid = require('uuid');
 const axios = require('axios');
 var bodyParser = require("body-parser");
 var app = express();
 var port = process.env.PORT || 3000;
+
+app.engine('hbs', engines.handlebars);
+app.set('views', './views');
+app.set('view engine', 'hbs');
 
 app.use(bodyParser.json());
 
@@ -109,12 +114,60 @@ function setWeatherLookupData(locationId, locationName){
     });
 }
 
+function processAlgorithm(population, time, weather, day){
+    var dayVal = 0;
+    var weatherVal = 0;
+    var timeVal = 0;
+    var populationVal = 0;
+    
+    if(day == "Sunday" || day == "Saturday"){
+        dayVal = 2;
+    }else{
+        if(time > 900 && time < 1700){
+            timeVal = 1;
+        }else{
+            timeVal = 2;
+        }
+        dayVal = 1;
+    }
+
+    if(weather < 7){
+        weatherVal = 4;
+    }else if(weather < 14){
+        weatherVal = 3;
+    }else if(weather < 22){
+        weatherVal = 2;
+    }else if(weather > 30) {
+        weatherVal = 4;
+    }else if(weather <= 30) {
+        weatherVal = 1;
+    }
+
+    if(population < 1000000){
+        populationVal = 1;
+    }else if(population < 3000000){
+        populationVal = 2;
+    }else if(population < 6000000){
+        populationVal = 3;
+    }else{
+        populationVal = 4;
+    }
+
+    var calc = 0.1 * timeVal + 0.4 * weatherVal + 0.2 * populationVal + 0.3 * dayVal;
+
+    return calc;    
+}
+
 app.use(bodyParser.json());
 var jsonParser = bodyParser.json();
 
 app.get('/', (request, response) => {
-    response.send(`${ Date.now() }`);
+    response.render('index');
 });
+
+// app.get('/google7c1de9e14bc4124c.html', (request, response) => {
+//     response.render('google7c1de9e14bc4124c.html');
+// });
 
 app.get('/suburbList', (request, response) => {
     response.set('Cache-Control', 'public, max-age=300, s-maxage=600');
@@ -145,18 +198,15 @@ app.post('/weather', urlencodedParser, (req, response) => {
     var locationOverallValue = data.id.split("-");
     var locationId = locationOverallValue[0];
     var locationValue = data.value;
-    //console.log(req.headers.last_name + ":");
-    var locationName = locationOverallValue[1] + ",AU";
-    var url = 'http://api.openweathermap.org/data/2.5/forecast?q=' + locationName + '&cnt=100&units=metric&APPID=908f958d6609dd37ee33114a87b81e1a';
-    var respo = "test";
+    var population = data.population;
+    var weather = data.weather;
+    var time = data.time;
+    var day = data.day;
     
-    // if(setWeatherLookupData(locationId, locationName)){
-        if(setWeatherData(data.weatherData, locationId, locationValue)){
-            response.send("Success");
-        }
-    // }
-    
-    response.send("Success");
+    setWeatherData(data.weatherData, locationId, locationValue);
+    var responsedata = processAlgorithm(population, time, weather, day);
+
+    response.json({"success": true, "value": responsedata});
 });
 
 app.get('/weather', (request, response) => {
